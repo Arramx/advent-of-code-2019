@@ -3,6 +3,86 @@ input = '3,225,1,225,6,6,1100,1,238,225,104,0,2,218,57,224,101,-3828,224,224,4,2
 def string_to_list(value):
   return [int(i) for i in value.split(',')]
 
+
+def check1n2(value, inx):
+  modes = str(value[inx])[:-2][::-1]
+  params = []
+
+  for i in range(2):
+    if i >= len(modes):
+      params.append(value[value[inx+i+1]])
+    else:
+      if int(modes[i]) == 0:
+        params.append(value[value[inx+i+1]])
+      elif int(modes[i]) == 1:
+        params.append(value[inx+i+1])
+  params.append(value[inx+3])
+
+  if int(str(value[inx])[-1]) == 1:
+    value[params[2]] = params[0] + params[1]
+  elif int(str(value[inx])[-1]) == 2:
+    value[params[2]] = params[0] * params[1]
+    
+
+def check3n4(value, inx, to_input):
+  modes = str(value[inx])[:-2][::-1]
+  params = []
+
+  if len(modes) == 0:
+    params.append(value[inx+1])
+  else:
+    if int(modes[0]) == 0:
+      params.append(value[inx+1])
+    elif int(modes[0]) == 1:
+      params.append(inx+1)
+
+  if int(str(value[inx])[-1]) == 3:
+    value[params[0]] = to_input
+  elif int(str(value[inx])[-1]) == 4:
+    return value[params[0]]
+
+
+def check5n6(value, inx):
+  modes = str(value[inx])[:-2][::-1]
+  params = []
+
+  for i in range(2):
+    if i >= len(modes):
+      params.append(value[value[inx+i+1]])
+    else:
+      if int(modes[i]) == 0:
+        params.append(value[value[inx+i+1]])
+      elif int(modes[i]) == 1:
+        params.append(value[inx+i+1])
+
+  if int(str(value[inx])[-1]) == 5 and params[0]:
+    inx = params[1]
+  elif int(str(value[inx])[-1]) == 6 and params[0] == 0:
+    inx = params[1]
+  else:
+    inx += 3
+  return inx
+
+def check7n8(value, inx):
+  modes = str(value[inx])[:-2][::-1]
+  params = []
+
+  for i in range(2):
+    if i >= len(modes):
+      params.append(value[value[inx+i+1]])
+    else:
+      if int(modes[i]) == 0:
+        params.append(value[value[inx+i+1]])
+      elif int(modes[i]) == 1:
+        params.append(value[inx+i+1])
+  params.append(value[inx+3])
+
+  if int(str(value[inx])[-1]) == 7:
+    value[params[2]] = int(params[0] < params[1])
+  elif int(str(value[inx])[-1]) == 8:
+    value[params[2]] = int(params[0] == params[1])
+
+
 def calculate1(value):
   value = string_to_list(value)
   to_input = 1
@@ -14,41 +94,13 @@ def calculate1(value):
       return output
     else:
       if int(str(value[inx])[-1]) == 1 or int(str(value[inx])[-1]) == 2:
-        modes = str(value[inx])[:-2][::-1]
-        params = []
-
-        for i in range(2):
-          if i >= len(modes):
-            params.append(value[value[inx+i+1]])
-          else:
-            if int(modes[i]) == 0:
-              params.append(value[value[inx+i+1]])
-            elif int(modes[i]) == 1:
-              params.append(value[inx+i+1])
-        params.append(value[inx+3])
-
-        if int(str(value[inx])[-1]) == 1:
-          value[params[2]] = params[0] + params[1]
-        elif int(str(value[inx])[-1]) == 2:
-          value[params[2]] = params[0] * params[1]
+        check1n2(value, inx)
         inx += 4
 
       elif int(str(value[inx])[-1]) == 3 or int(str(value[inx])[-1]) == 4:
-        modes = str(value[inx])[:-2][::-1]
-        params = []
-
-        if len(modes) == 0:
-          params.append(value[inx+1])
-        else:
-          if int(modes[0]) == 0:
-            params.append(value[inx+1])
-          elif int(modes[0]) == 1:
-            params.append(inx+1)
-
-        if int(str(value[inx])[-1]) == 3:
-          value[params[0]] = to_input
-        elif int(str(value[inx])[-1]) == 4:
-          output = value[params[0]]
+        buffer = check3n4(value, inx, to_input)
+        if buffer:
+          output = buffer
         inx += 2
 
 def calculate2(value):
@@ -61,66 +113,22 @@ def calculate2(value):
     if value[inx] == 99:
       return output
     else:
-      if int(str(value[inx])[-1]) == 1 or int(str(value[inx])[-1]) == 2 or int(str(value[inx])[-1]) == 7 or int(str(value[inx])[-1]) == 8:
-        modes = str(value[inx])[:-2][::-1]
-        params = []
-
-        for i in range(2):
-          if i >= len(modes):
-            params.append(value[value[inx+i+1]])
-          else:
-            if int(modes[i]) == 0:
-              params.append(value[value[inx+i+1]])
-            elif int(modes[i]) == 1:
-              params.append(value[inx+i+1])
-        params.append(value[inx+3])
-
-        if int(str(value[inx])[-1]) == 1:
-          value[params[2]] = params[0] + params[1]
-        elif int(str(value[inx])[-1]) == 2:
-          value[params[2]] = params[0] * params[1]
-        elif int(str(value[inx])[-1]) == 7:
-          value[params[2]] = int(params[0] < params[1])
-        elif int(str(value[inx])[-1]) == 8:
-          value[params[2]] = int(params[0] == params[1])
+      if int(str(value[inx])[-1]) == 1 or int(str(value[inx])[-1]) == 2:
+        check1n2(value, inx)
         inx += 4
 
       elif int(str(value[inx])[-1]) == 3 or int(str(value[inx])[-1]) == 4:
-        modes = str(value[inx])[:-2][::-1]
-        params = []
-
-        if len(modes) == 0:
-          params.append(value[inx+1])
-        else:
-          if int(modes[0]) == 0:
-            params.append(value[inx+1])
-          elif int(modes[0]) == 1:
-            params.append(inx+1)
-
-        if int(str(value[inx])[-1]) == 3:
-          value[params[0]] = to_input
-        elif int(str(value[inx])[-1]) == 4:
-          output = value[params[0]]
+        buffer = check3n4(value, inx, to_input)
+        if buffer:
+          output = buffer
         inx += 2
 
       elif int(str(value[inx])[-1]) == 5 or int(str(value[inx])[-1]) == 6:
-        modes = str(value[inx])[:-2][::-1]
-        params = []
-
-        for i in range(2):
-          if i >= len(modes):
-            params.append(value[value[inx+i+1]])
-          else:
-            if int(modes[i]) == 0:
-              params.append(value[value[inx+i+1]])
-            elif int(modes[i]) == 1:
-              params.append(value[inx+i+1])
-
-        if int(str(value[inx])[-1]) == 5 and params[0]:
-          inx = params[1]
-        elif int(str(value[inx])[-1]) == 6 and params[0] == 0:
-          inx = params[1]
-        else:
-          inx += 3
+        inx = check5n6(value, inx)
       
+      elif int(str(value[inx])[-1]) == 7 or int(str(value[inx])[-1]) == 8:
+        check7n8(value, inx)
+        inx += 4
+
+
 print(calculate1(input), calculate2(input))
